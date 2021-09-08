@@ -212,3 +212,75 @@ bool unite(int a,int b){
 int size(int a){return rank[find(a)];}
 };
 
+
+
+===============================================Segment Treees===========================================================================================
+	
+	
+	
+	
+template<typename T , class F = function<T(const T&,const T&)> >
+class SegTree{
+public:
+   F f;
+   vector<T>& arr;
+  vector<int>tree;
+    SegTree( F f, vector<T>& arr):f(f), arr(arr){
+        tree.resize(4*arr.size(),0);
+  //      Print(tree);
+         build(1, 1, arr.size() );
+     //   Print(tree);
+    }
+
+    void build(int node , int st , int en){
+      if(st == en){
+        // leaf node 
+        tree[node-1] = arr[st-1];
+        return ;
+      }
+
+      int mid = (st+en)/2;
+      build(2*node, st , mid);
+      build(2*node+1, mid+1, en);
+      tree[node-1] = f(tree[2*node-1],tree[2*node]);
+
+    }
+
+    void Print(vector<T>& vec){
+      for(auto x:vec)cout << x << ' ';
+    }
+
+    T get(int node, int st ,int en , int l , int r){
+         if(st>r || en <l){
+           return 0; // bilkul overlap nhi kr rhi nodes
+         }
+
+         else if((st>=l) and (en<=r)){
+           // l .. st .. en .. r
+           return tree[node-1]; 
+         }
+         else{
+           int mid = (st+en)/2;
+           // left vale ped ka answer le aao
+           T q1 = get(2*node,st, mid, l ,r);
+           T q2 = get(2*node +1 , mid+1, en, l , r);
+           return f(q1,q2);
+         }
+    }
+
+    void update(int node, int point , int st , int en, int val){
+      if((st==en) and (st == point)){
+         tree[node-1] += val; return;
+      }
+      else if((point<=en) and (point>=st)){
+         tree[node-1] += val;
+         int mid  = (st+en)/2;
+         update(2*node,point ,st, mid, val);
+         update(2*node+1, point, mid+1, en, val);
+      }
+      else{
+        return;
+      }
+    }
+};
+
