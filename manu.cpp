@@ -336,3 +336,38 @@ int multiplicativeModuloInverse(int a, int m){
   triplet temp = extendedEuclid(a,m);
   return temp.x;
 }
+
+
+//=======================================JUNK=====================================================================================
+#define DEBUG(X)  #X 
+#ifdef MANU
+#define S 50
+#endif
+
+#ifndef ONLINE_JUDGE
+template<typename... T>
+void debug(T&... args){
+  cout << "\n==================\n";
+  ((cout<< args<<", "), ...);
+  cout << "\n==================\n";
+}
+template<typename T>
+void debug(vector<T>& a){
+  cout << "\nVector "<< DEBUG(a) << "\n==============\n";
+  for(auto& e:a)cout << e << ' ';
+  cout << "\n==============\n";
+}
+#else
+#define debug(...) ;
+#endif
+
+template<typename... T>
+void see(T&... args) { ((cin >> args), ...);}
+template<typename... T>
+void put(T&... args) { ((cout << args << " "), ...);}
+template<typename... T>
+void putl(T&... args) { ((cout << args << " "), ...); cout<<'\n';}
+template<typename T>
+void seea(vector<T>& a){for(auto& e:a)cin >> e;}
+template<typename T>
+void puta(vector<T>& a){for(auto& e:a)cout << e << ' ';cout << '\n';};
