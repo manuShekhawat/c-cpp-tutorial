@@ -1,0 +1,33 @@
+
+struct dsu{
+   vector<int>parent,rank; int n;
+   
+   dsu(int n_){
+     n = n_; parent.resize(n); rank.resize(n);
+
+     iota(parent.begin() , parent.end() ,0); fill(rank.begin() , rank.end() , 1);
+   }
+   
+   int find(int a){
+       if(parent[a]!=a)parent[a] = find(parent[a]);
+       return parent[a];
+   }
+
+   bool same(int a , int b){
+      return find(a)==find(b);
+   }
+
+   void unite(int a, int b){
+     if(same(a,b))return ;
+     int p1 = find(a);
+     int p2 = find(b);
+     if(rank[p2]>rank[p1]){
+       rank[p2]+=rank[p1];
+       parent[p1] = p2;
+     }
+     else{
+       rank[p1]+=rank[p2];
+       parent[p2] = p1;
+     }
+   }
+};
