@@ -1,0 +1,5 @@
+What is Kosaraju's Algorithm ?
+> Algo for detecting strongly connected components of a graph. 
+
+What is a strongly connected component ?
+> A strongly connected component is a part of a graph in which each vertex can be visited by any other vertex of a graph
