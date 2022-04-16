@@ -3,3 +3,7 @@ What is Kosaraju's Algorithm ?
 
 What is a strongly connected component ?
 > A strongly connected component is a part of a graph in which each vertex can be visited by any other vertex of a graph
+
+
+krna ye h ki pehle graph pe dfs chlao , uske baad graph reverse krke dfs chlao , jo bnde strongly connected component ka part h vo log dono cases m visit kr skenge pr jo
+nhi h vo sirf ek hi case h chlenge.
