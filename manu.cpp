@@ -371,3 +371,86 @@ template<typename T>
 void seea(vector<T>& a){for(auto& e:a)cin >> e;}
 template<typename T>
 void puta(vector<T>& a){for(auto& e:a)cout << e << ' ';cout << '\n';};
+
+
+
+//================================================Segment Tree 2nd version ===================================================================================
+
+
+ 
+struct Segtree{
+ 
+vector<int>lazy,tree , arr;
+int n ;int tar;
+ 
+Segtree(vector<int>& a){
+   n = a.size();  tar= 0;
+  lazy.resize(4*n+4); tree.resize(4*n+4); arr.resize(n+1);
+  for(int i= 1; i<=n ;i++)arr[i] =a[i-1];
+  build(1,1,n);
+}
+ 
+void build(int node , int st , int en ){
+   if(st==en){
+     tree[node] = arr[st];return;
+   }
+   int mid = (st+en)/2;
+   // pehle left vala bna
+   build(2*node ,st, mid);
+   // right vala bna le 
+   build(2*node +1 , mid+1 , en);
+ 
+   tree[node] = f(tree[2*node] , tree[2*node+1]);
+}
+ 
+int update(int node , int st , int en , int l , int r , int val){
+    if(st>r || en<l){
+      return tar; // this node has got out of range
+    }
+    
+    if(st>=l and en<=r){
+      lazy[node] += val; tree[node]+=(en-st+1)*val;
+      return tree[node];
+    }
+ 
+    int mid = (st+en)/2;
+ 
+    int q1 = update(2*node, st,mid,l,r,val);
+    int q2 = update(2*node+1,mid+1,en,l,r,val);
+ 
+    return f(q1,q2);
+}
+ 
+int get(int node , int st , int en , int  l , int r){
+  // itna aage aa hi gya to pehle lazy ko check krleta 
+ 
+ 
+  if(st>r || en<l){
+    // no overlap
+    return tar;
+  }
+ 
+ 
+  if(lazy[node]!=0){
+    if(st == en)lazy[node] = 0;
+    else{
+      int sz = (en-st+1);
+      tree[2*node] += lazy[node]*((sz+1)/2);
+      tree[2*node+1] += lazy[node]*(sz/2);
+      lazy[2*node+1] += lazy[node]; lazy[2*node]+=lazy[node];
+      lazy[node] = 0;
+    }
+  }
+  
+  
+ 
+  if(st>=l and en<=r){
+    // full overlap
+    return tree[node];
+  }
+ 
+  int mid = (st+en)/2;
+  int  ans = f(get(2*node , st , mid , l ,r) , get(2*node+1 , mid+1 , en , l , r));
+  return ans ;
+}
+};
