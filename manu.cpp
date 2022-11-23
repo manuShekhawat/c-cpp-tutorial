@@ -454,3 +454,47 @@ int get(int node , int st , int en , int  l , int r){
   return ans ;
 }
 };
+
+
+/////////////////////////////////////// KMP algorithm ///////////////////////////////////////////////////////////////////////////////////////////////
+
+vector<int> create_lps(string& p){
+   vector<int>lps(p.length());
+   lps[0] = 0;
+
+   for(int i= 1 , j= 0; i<p.length() ; i++){
+      while(j>0 && p[i]!=p[j]){
+          j = lps[j-1];
+      }
+      if(p[i] == p[j])lps[i] = ++j;
+   }
+
+   return lps;
+}
+
+vector<int> kmp(string s, string p){
+    vector<int>lps = create_lps(p);
+    de(lps);
+    vector<int>index; // starting of substring in s as p
+
+    for(int i = 0 , j= 0; i<s.length() ; i++){
+        if(s[i] == p[j]){
+          j++;
+          if(j == p.length()){
+            index.push_back(i - p.length() + 1);
+            j = lps.back();
+          }
+        }
+
+        else{
+          while(j>0 && s[i]!=p[j]){
+            j = lps[j-1];
+          }
+          if(s[i] == p[j])++j;
+        }
+    }
+
+    de(index);
+    return index;
+}
+
