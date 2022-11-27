@@ -498,3 +498,28 @@ vector<int> kmp(string s, string p){
     return index;
 }
 
+
+///////////////////////////////////////// nCr ///////////////////////////////////////////////////////////////////////////////////
+
+vector<int>fact(N+1);
+  vector<int>inv(N+1);
+  auto clc_inv_fact = [&](int p) -> void
+  {
+    inv[1] = 1;
+    for (int i = 2; i <= N; ++i)
+      inv[i] = p - (p / i) * inv[p % i] % p;
+  };
+
+  auto clc_fact = [&](int p)->void{
+    fact[1] = 1;
+    for(int i = 2; i<=N  ; i++){
+      fact[i] *= fact[i-1];
+      fact[i]%=p;
+    }
+  };
+  clc_fact(p); clc_inv_fact(p);
+  auto nCr = [&](int a , int b , int p)->int{
+    if(a<b || b < 0)return 0;
+    return (((fact[a]*inv[b])%p)*inv[a-b])%p; 
+  };
+
