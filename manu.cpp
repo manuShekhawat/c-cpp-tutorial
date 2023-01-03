@@ -528,15 +528,124 @@ vector<int>fact(N+1);
 
 
 struct FT {
-	vector<ll> s;
+	vector<int> s;
 	FT(int n) : s(n) {}
 	void update(int pos, ll dif) { // a[pos] += dif
-		for (; pos < sz(s); pos |= pos + 1) s[pos] += dif;
+		for (; pos < s.size(); pos |= pos + 1) s[pos] += dif;
 	}
-	ll query(int pos) { // sum of values in [0, pos)
+	int query(int pos) { // sum of values in [0, pos)
+		if(pos<0) return 0 ;
 		ll res = 0;
 		for (; pos > 0; pos &= pos - 1) res += s[pos-1];
 		return res;
 	}
+};
+
+
+
+/////////////////////////////////////////////////////////////////// Segement Tree Lazy Sum ////////////////////////////////////////////////////////////////////////////
+
+
+
+struct SegTree{
+
+   // Inclusive [] , range update
+
+   // Variables  
+   vector<int>tree;
+   vector<int>lazy; 
+   int size ;
+
+
+   // Constructor
+   SegTree(int _n){
+      size = _n;
+      tree.resize(4*_n + 1); fill(tree.begin() , tree.end() , 0);
+      lazy.resize(4*size+1); fill(lazy.begin() , lazy.end() , 0);
+   }
+
+   SegTree(vector<int>& a){
+    size = a.size() ;
+    tree.resize(4*a.size() + 1); lazy.resize(4*a.size()+1);
+    build(1 , 0 , a.size()-1 , a); 
+   }
+
+
+   int build(int node , int ll , int rr , vector<int>& arr){
+
+      if(rr == ll){
+        return tree[node] = arr[ll]; 
+      }
+      
+      int mid = (ll+rr)/2;
+
+      return tree[node]= build(2*node ,ll , mid , arr) + build(2*node + 1, mid+1 , rr , arr);
+   }
+
+   int query(int ll , int rr){
+       return querY(1 , 0 , size-1 , ll , rr );
+   }
+
+   int querY(int node , int ll , int rr , int target_ll , int target_rr ){
+      if(lazy[node] != 0){
+        tree[node] = tree[node] + (rr - ll + 1)*lazy[node];
+        
+        if(ll != rr){
+          lazy[2*node] += lazy[node]; 
+          lazy[2*node+1] += lazy[node];
+        }
+        lazy[node] = 0; 
+      }
+
+      if(ll>target_rr || rr<target_ll){
+        return 0 ; 
+      }
+
+      if(ll>=target_ll && rr<=target_rr){
+        return tree[node];
+      }
+
+      int mid = (ll + rr)/2;
+
+      int q1 = querY(2*node , ll , mid , target_ll , target_rr);
+      int q2 = querY(2*node+1 , mid + 1, rr , target_ll , target_rr);
+      return q1+q2;
+   }
+
+   void range_update(int ll , int rr , int val){   
+      range_updatE(1 , 0 , size-1 , ll , rr , val);
+   }
+
+   void range_updatE(int node , int ll , int rr , int target_ll , int target_rr , int val){
+      if(lazy[node] != 0){
+         tree[node] += (rr - ll + 1)*lazy[node];
+
+         if(rr != ll){
+          // if children exist , mark them lazy 
+          lazy[2*node] += lazy[node];
+          lazy[2*node +1 ] += lazy[node];
+         }
+         lazy[node] = 0;
+      }
+
+
+      if(ll>target_rr || rr<target_ll){
+        return ;
+      }
+      
+      if(ll>=target_ll && rr<=target_rr){
+        tree[node] = tree[node] + val*(rr - ll + 1) ;
+        if(ll != rr){
+          lazy[2*node] += val ;
+          lazy[2*node + 1] += val;  
+        }
+        return ; 
+      }
+
+      int mid = (ll + rr)/2;
+      range_updatE(2*node , ll , mid , target_ll , target_rr , val);
+      range_updatE(2*node + 1, mid+1 , rr , target_ll , target_rr , val);
+      tree[node] = tree[node*2] + tree[2*node+1];
+   }
 };
 
